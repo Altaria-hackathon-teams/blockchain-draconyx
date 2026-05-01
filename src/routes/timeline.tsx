@@ -4,6 +4,7 @@ import { listEvidence } from "@/lib/storage";
 import { RiskBadge } from "@/components/RiskBadge";
 import { shortHash } from "@/lib/crypto";
 import { FileImage, FileVideo, FileAudio, File as FileIcon, ChevronRight, Plus } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/timeline")({
   head: () => ({ meta: [{ title: "Evidence Timeline — SilentWitness" }] }),
@@ -18,6 +19,7 @@ function iconFor(mime: string) {
 }
 
 function TimelinePage() {
+  const { t } = useLanguage();
   const items = listEvidence();
   return (
     <div className="min-h-screen bg-background">
@@ -25,7 +27,7 @@ function TimelinePage() {
       <div className="mx-auto max-w-4xl px-6 py-12">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Evidence Timeline</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t('timeline.title')}</h1>
             <p className="mt-2 text-muted-foreground">{items.length} sealed records on this device</p>
           </div>
           <Link
@@ -38,9 +40,9 @@ function TimelinePage() {
 
         {items.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-gradient-card p-12 text-center">
-            <p className="text-muted-foreground">No evidence sealed yet.</p>
+            <p className="text-muted-foreground">{t('timeline.empty')}</p>
             <Link to="/capture" className="mt-4 inline-block text-primary underline">
-              Capture your first evidence
+              {t('cert.btn.captureNew')}
             </Link>
           </div>
         ) : (

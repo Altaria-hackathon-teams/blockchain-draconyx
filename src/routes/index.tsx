@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Shield, Camera, Brain, Link2, FileCheck, Lock, Activity } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,6 +23,7 @@ const features = [
 ];
 
 function HomePage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -35,23 +37,23 @@ function HomePage() {
             Hackathon MVP · Polygon · IPFS · AI
           </div>
           <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight md:text-6xl">
-            Evidence that <span className="text-gradient-primary">cannot be erased</span>, denied, or doctored.
+            {t('home.hero.title')}
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-            SilentWitness seals digital evidence into the blockchain and runs an on-device AI integrity analyser to flag tampering — built for survivors who need their truth preserved.
+            {t('home.hero.subtitle')}
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
               to="/capture"
               className="inline-flex items-center gap-2 rounded-lg bg-gradient-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
             >
-              <Camera className="h-4 w-4" /> Capture Evidence
+              <Camera className="h-4 w-4" /> {t('home.btn.capture')}
             </Link>
             <Link
               to="/verify"
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-card/60 px-6 py-3 font-medium text-foreground backdrop-blur transition-colors hover:bg-card"
             >
-              <FileCheck className="h-4 w-4" /> Verify a File
+              <FileCheck className="h-4 w-4" /> {t('home.btn.verify')}
             </Link>
           </div>
 

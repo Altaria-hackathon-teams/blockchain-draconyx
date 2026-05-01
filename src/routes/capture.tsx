@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Camera, Upload, MapPin, FileText, ShieldCheck, X, Mic, WifiOff } from "lucide-react";
 import { useShake, requestMotionPermission } from "@/lib/shake";
 import { isOnline, count as offlineCount, enqueue } from "@/lib/offline";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/capture")({
   head: () => ({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/capture")({
 });
 
 function CapturePage() {
+  const { t } = useLanguage();
   const nav = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -150,9 +152,9 @@ function CapturePage() {
           </div>
         )}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Capture Evidence</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('capture.title')}</h1>
           <p className="mt-2 text-muted-foreground">
-            Upload a photo, audio, or video. Everything is processed locally before being sealed.
+            {t('capture.subtitle')}
           </p>
         </div>
 
@@ -168,8 +170,8 @@ function CapturePage() {
                 <Upload className="h-6 w-6" />
               </div>
               <div className="text-center">
-                <div className="font-medium">Click to upload or drop a file</div>
-                <div className="mt-1 text-xs text-muted-foreground">Image · Audio · Video — up to 50 MB</div>
+                <div className="font-medium">{t('capture.dropzone.title')}</div>
+                <div className="mt-1 text-xs text-muted-foreground">{t('capture.dropzone.subtitle')}</div>
               </div>
             </button>
           ) : (
@@ -212,10 +214,10 @@ function CapturePage() {
               onClick={() => fileRef.current?.click()}
               className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background/40 px-4 py-3 text-sm transition-colors hover:bg-secondary"
             >
-              <Upload className="h-4 w-4" /> Choose file
+              <Upload className="h-4 w-4" /> {t('capture.btn.chooseFile')}
             </button>
             <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-background/40 px-4 py-3 text-sm transition-colors hover:bg-secondary">
-              <Camera className="h-4 w-4" /> Use camera
+              <Camera className="h-4 w-4" /> {t('capture.btn.useCamera')}
               <input
                 type="file"
                 accept="image/*"
@@ -230,10 +232,10 @@ function CapturePage() {
           <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-background/40 px-4 py-3 text-sm">
             <Mic className={`h-4 w-4 ${recording ? "text-destructive animate-pulse" : "text-primary"}`} />
             <span className="font-medium">
-              {recording ? "Recording…" : shakeArmed ? "Shake to record audio" : "Quick audio capture"}
+              {recording ? t('capture.shake.recording') : shakeArmed ? t('capture.shake.ready') : t('capture.shake.quick')}
             </span>
             <span className="text-xs text-muted-foreground">
-              {recording ? "Auto-stops in 15s" : "15s max — for emergency moments"}
+              {recording ? t('capture.shake.autoStop') : t('capture.shake.max')}
             </span>
             <div className="ml-auto flex gap-2">
               {!shakeArmed && !recording && (
@@ -242,7 +244,7 @@ function CapturePage() {
                   onClick={armShake}
                   className="rounded-md border border-border px-3 py-1.5 text-xs transition-colors hover:bg-secondary"
                 >
-                  Arm shake
+                  {t('capture.shake.arm')}
                 </button>
               )}
               {!recording ? (
@@ -251,7 +253,7 @@ function CapturePage() {
                   onClick={startRecording}
                   className="rounded-md bg-primary/15 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/25"
                 >
-                  Record now
+                  {t('capture.shake.recordNow')}
                 </button>
               ) : (
                 <button
@@ -259,7 +261,7 @@ function CapturePage() {
                   onClick={stopRecording}
                   className="rounded-md bg-destructive/20 px-3 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive/30"
                 >
-                  Stop
+                  {t('capture.shake.stop')}
                 </button>
               )}
             </div>
@@ -268,12 +270,12 @@ function CapturePage() {
           {/* Description */}
           <div>
             <label className="mb-2 flex items-center gap-2 text-sm font-medium">
-              <FileText className="h-4 w-4 text-primary" /> Description
+              <FileText className="h-4 w-4 text-primary" /> {t('capture.field.description')}
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What does this evidence show? When did the incident happen?"
+              placeholder={t('capture.field.description.placeholder')}
               rows={3}
               className="w-full rounded-lg border border-border bg-background/60 px-3 py-2 text-sm outline-none transition-colors focus:border-primary"
             />
@@ -282,13 +284,13 @@ function CapturePage() {
           {/* Location */}
           <div>
             <label className="mb-2 flex items-center gap-2 text-sm font-medium">
-              <MapPin className="h-4 w-4 text-primary" /> Location (optional)
+              <MapPin className="h-4 w-4 text-primary" /> {t('capture.field.location')}
             </label>
             <div className="flex gap-2">
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Lat, Long or address"
+                placeholder={t('capture.field.location.placeholder')}
                 className="flex-1 rounded-lg border border-border bg-background/60 px-3 py-2 text-sm outline-none focus:border-primary"
               />
               <button
@@ -306,7 +308,7 @@ function CapturePage() {
             onClick={submit}
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-primary px-6 py-3.5 font-semibold text-primary-foreground shadow-glow transition-all disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ShieldCheck className="h-5 w-5" /> Secure Evidence
+            <ShieldCheck className="h-5 w-5" /> {t('capture.btn.submit')}
           </button>
         </div>
       </div>

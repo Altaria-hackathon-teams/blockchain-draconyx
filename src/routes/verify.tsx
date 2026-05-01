@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { sha256File, shortHash, ipfsGatewayUrl, polygonscanUrl } from "@/lib/crypto";
 import { getEvidenceByHash } from "@/lib/storage";
 import { Upload, CheckCircle2, XCircle, Search, ExternalLink, Loader2 } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 type VerifyResult =
   | { status: "match"; recordHash: string; computed: string; record: ReturnType<typeof getEvidenceByHash> }
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/verify")({
 });
 
 function VerifyPage() {
+  const { t } = useLanguage();
   const { hash } = Route.useSearch();
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -58,9 +60,9 @@ function VerifyPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="mx-auto max-w-3xl px-6 py-12">
-        <h1 className="text-3xl font-bold tracking-tight">Verify Evidence Authenticity</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('verify.title')}</h1>
         <p className="mt-2 text-muted-foreground">
-          Upload a file or paste a hash. We'll re-compute SHA-256 and compare to the on-chain record.
+          {t('verify.subtitle')}
         </p>
 
         <div className="mt-8 grid gap-4 rounded-2xl border border-border bg-gradient-card p-6 shadow-elegant">
@@ -75,7 +77,7 @@ function VerifyPage() {
               <Upload className="h-7 w-7 text-primary" />
             )}
             <div className="text-center">
-              <div className="font-medium">{busy ? "Hashing & verifying…" : "Upload file to verify"}</div>
+              <div className="font-medium">{busy ? t('verify.btn.hashing') : t('verify.btn.upload')}</div>
               <div className="mt-1 text-xs text-muted-foreground">SHA-256 is computed locally</div>
             </div>
           </button>
@@ -88,7 +90,7 @@ function VerifyPage() {
 
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-border" />
-            <span className="text-xs text-muted-foreground">OR</span>
+            <span className="text-xs text-muted-foreground">{t('verify.or')}</span>
             <div className="h-px flex-1 bg-border" />
           </div>
 
@@ -96,14 +98,14 @@ function VerifyPage() {
             <input
               value={hashInput}
               onChange={(e) => setHashInput(e.target.value)}
-              placeholder="Paste SHA-256 hash"
+              placeholder={t('verify.placeholder.hash')}
               className="flex-1 rounded-lg border border-border bg-background/60 px-3 py-2.5 font-mono text-sm outline-none focus:border-primary"
             />
             <button
               onClick={lookup}
               className="inline-flex items-center gap-2 rounded-lg bg-gradient-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
             >
-              <Search className="h-4 w-4" /> Lookup
+              <Search className="h-4 w-4" /> {t('verify.btn.lookup')}
             </button>
           </div>
         </div>
@@ -115,13 +117,14 @@ function VerifyPage() {
 }
 
 function ResultCard({ result }: { result: VerifyResult }) {
+  const { t } = useLanguage();
   if (result.status === "match" && result.record) {
     return (
       <div className="mt-6 rounded-2xl border-2 border-success/40 bg-success/5 p-6">
         <div className="flex items-start gap-3">
           <CheckCircle2 className="h-7 w-7 shrink-0 text-success" />
           <div className="flex-1">
-            <div className="text-lg font-bold text-success">Authentic — hash matches on-chain record</div>
+            <div className="text-lg font-bold text-success">{t('verify.status.match')}</div>
             <div className="mt-1 text-sm text-muted-foreground">
               Sealed {new Date(result.record.timestamp).toLocaleString()}
             </div>
@@ -156,7 +159,7 @@ function ResultCard({ result }: { result: VerifyResult }) {
         <div className="flex items-start gap-3">
           <XCircle className="h-7 w-7 shrink-0 text-destructive" />
           <div>
-            <div className="text-lg font-bold text-destructive">Hash mismatch — file has been altered</div>
+            <div className="text-lg font-bold text-destructive">{t('verify.status.mismatch')}</div>
             <div className="mt-3 space-y-2 break-all rounded-lg border border-border/60 bg-background/40 p-4 font-mono text-xs">
               <div>
                 <span className="text-muted-foreground">On-chain · </span>
@@ -177,7 +180,7 @@ function ResultCard({ result }: { result: VerifyResult }) {
       <div className="flex items-start gap-3">
         <XCircle className="h-7 w-7 shrink-0 text-warning" />
         <div>
-          <div className="text-lg font-bold text-warning">No matching evidence on this device</div>
+          <div className="text-lg font-bold text-warning">{t('verify.status.notFound')}</div>
           <div className="mt-1 text-sm text-muted-foreground">
             Computed SHA-256 was not found in the local ledger. In production this would query the smart contract.
           </div>

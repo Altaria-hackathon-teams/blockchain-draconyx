@@ -6,6 +6,7 @@ import { sha256File, simulateTxHash } from "@/lib/crypto";
 import { pinToIPFS } from "@/api/pinata.functions";
 import { analyseImage, basicReportForNonImage } from "@/lib/ai-analyser";
 import { dataUrlToBlob, saveEvidence, type EvidenceRecord } from "@/lib/storage";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/processing")({
   head: () => ({ meta: [{ title: "Sealing Evidence — SilentWitness" }] }),
@@ -21,6 +22,7 @@ const STEPS = [
 ] as const;
 
 function ProcessingPage() {
+  const { t } = useLanguage();
   const nav = useNavigate();
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
@@ -109,9 +111,9 @@ function ProcessingPage() {
           <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-full bg-gradient-primary shadow-glow animate-pulse-glow">
             <Loader2 className="h-9 w-9 animate-spin text-primary-foreground" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">Sealing your evidence</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('processing.title')}</h1>
           <p className="mt-2 text-muted-foreground">
-            All operations run locally and on decentralised networks.
+            {t('processing.subtitle')}
           </p>
         </div>
 
