@@ -13,7 +13,6 @@ import { forensicImageReport } from "@/api/ai.functions";
 import { canViewContent, canManageAccess, getGrants, grantAccess, revokeAccess, ROLE_LABELS, getRole, type Role } from "@/lib/roles";
 import { Download, ExternalLink, Copy, Check, FlaskConical, Eye, Lock, UserPlus, UserMinus } from "lucide-react";
 import { downloadCertificatePdf } from "@/lib/cert-pdf";
-import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/certificate/$id")({
   head: () => ({ meta: [{ title: "Evidence Certificate — SilentWitness" }] }),
@@ -21,7 +20,6 @@ export const Route = createFileRoute("/certificate/$id")({
 });
 
 function CertPage() {
-  const { t } = useLanguage();
   const { id } = useParams({ from: "/certificate/$id" });
   const [rec, setRec] = useState(() => getEvidence(id));
   const [qr, setQr] = useState("");
@@ -88,9 +86,9 @@ function CertPage() {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="mx-auto max-w-md px-6 py-24 text-center">
-          <h1 className="text-2xl font-bold">{t('cert.notFound')}</h1>
+          <h1 className="text-2xl font-bold">Evidence not found</h1>
           <Link to="/capture" className="mt-4 inline-block text-primary underline">
-            {t('cert.btn.captureNew')}
+            Capture new evidence
           </Link>
         </div>
       </div>
@@ -117,8 +115,8 @@ function CertPage() {
       <Header />
       <div className="mx-auto max-w-5xl px-6 py-12">
         <div className="mb-8">
-          <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{t('cert.sealed')}</div>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">{t('cert.title')}</h1>
+          <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Certificate · Sealed</div>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight">Evidence is now tamper-proof</h1>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
@@ -163,7 +161,7 @@ function CertPage() {
             )}
 
             <div className="rounded-2xl border border-border bg-gradient-card p-5 shadow-elegant">
-              <div className="mb-4 text-xs uppercase tracking-wider text-muted-foreground">{t('cert.crypto.title')}</div>
+              <div className="mb-4 text-xs uppercase tracking-wider text-muted-foreground">Cryptographic record</div>
               <Row label="SHA-256" value={rec.hash} onCopy={() => copy(rec.hash, "hash")} copied={copied === "hash"} />
               <Row label="IPFS CID" value={rec.cid} onCopy={() => copy(rec.cid, "cid")} copied={copied === "cid"} href={ipfsGatewayUrl(rec.cid)} />
               <Row label="Polygon Tx" value={rec.txHash} onCopy={() => copy(rec.txHash, "tx")} copied={copied === "tx"} href={polygonscanUrl(rec.txHash)} />
@@ -183,13 +181,13 @@ function CertPage() {
 
             <div className="rounded-2xl border border-border bg-gradient-card p-6 text-center shadow-elegant">
               {qr ? <img src={qr} alt="QR" className="mx-auto rounded-lg" /> : <div className="mx-auto h-[280px] w-[280px] animate-pulse rounded-lg bg-secondary" />}
-              <div className="mt-4 font-mono text-xs uppercase tracking-wider text-muted-foreground">{t('cert.scan')}</div>
+              <div className="mt-4 font-mono text-xs uppercase tracking-wider text-muted-foreground">Scan to verify</div>
               <div className="mt-1 font-mono text-sm">{shortHash(rec.hash, 6)}</div>
             </div>
 
             {canManageAccess(role) && (
               <div className="rounded-2xl border border-border bg-gradient-card p-5 shadow-elegant">
-                <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">{t('cert.rbac.title')}</div>
+                <div className="mb-3 text-xs uppercase tracking-wider text-muted-foreground">Access management</div>
                 {(["ngo", "verifier"] as Role[]).map((r) => {
                   const granted = grants.includes(r);
                   return (
@@ -202,7 +200,7 @@ function CertPage() {
                     >
                       <span>{ROLE_LABELS[r]}</span>
                       <span className="flex items-center gap-1 text-xs">
-                        {granted ? <><UserMinus className="h-3.5 w-3.5" /> {t('cert.rbac.revoke')}</> : <><UserPlus className="h-3.5 w-3.5" /> {t('cert.rbac.grant')}</>}
+                        {granted ? <><UserMinus className="h-3.5 w-3.5" /> Revoke</> : <><UserPlus className="h-3.5 w-3.5" /> Grant</>}
                       </span>
                     </button>
                   );
@@ -211,13 +209,13 @@ function CertPage() {
             )}
 
             <button onClick={() => downloadCertificatePdf(rec, qr)} className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-primary px-4 py-3 font-medium text-primary-foreground shadow-glow">
-              <Download className="h-4 w-4" /> {t('cert.btn.download')}
+              <Download className="h-4 w-4" /> Download Legal Certificate
             </button>
             <Link to="/verify" search={{ hash: rec.hash } as never} className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card/60 px-4 py-3 text-sm transition-colors hover:bg-card">
-              <Eye className="h-4 w-4" /> {t('cert.btn.verify')}
+              <Eye className="h-4 w-4" /> Open verification page
             </Link>
             <Link to="/tamper-test/$id" params={{ id: rec.id }} className="flex w-full items-center justify-center gap-2 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning transition-colors hover:bg-warning/20">
-              <FlaskConical className="h-4 w-4" /> {t('cert.btn.tamper')}
+              <FlaskConical className="h-4 w-4" /> Tampering simulation
             </Link>
           </div>
         </div>

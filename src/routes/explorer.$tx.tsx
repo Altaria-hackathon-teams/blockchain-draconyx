@@ -4,7 +4,6 @@ import { Header } from "@/components/Header";
 import { getEvidenceByTxHash, type EvidenceRecord } from "@/lib/storage";
 import { ExternalLink, CheckCircle2, PackageSearch, LayoutPanelLeft, Clock, Code2, Database } from "lucide-react";
 import { ipfsGatewayUrl, shortHash } from "@/lib/crypto";
-import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/explorer/$tx")({
   head: () => ({ meta: [{ title: "Polygonscan Simulation — SilentWitness" }] }),
@@ -12,7 +11,6 @@ export const Route = createFileRoute("/explorer/$tx")({
 });
 
 function ExplorerPage() {
-  const { t } = useLanguage();
   const { tx } = useParams({ from: "/explorer/$tx" });
   const [record, setRecord] = useState<EvidenceRecord | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,7 +40,7 @@ function ExplorerPage() {
           </div>
           <div className="ml-auto hidden md:block">
             <Link to="/" className="text-sm font-medium text-[#8247E5] hover:underline">
-              {t('nav.home')}
+              Back to SilentWitness
             </Link>
           </div>
         </div>

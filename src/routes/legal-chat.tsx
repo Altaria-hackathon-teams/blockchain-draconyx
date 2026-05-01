@@ -5,7 +5,6 @@ import { Send, FileText, Loader2, Sparkles, Download, ShieldCheck } from "lucide
 import { generateFIR } from "@/api/ai.functions";
 import { downloadFIRPdf, type FIR } from "@/lib/fir-pdf";
 import { listEvidence } from "@/lib/storage";
-import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/legal-chat")({
   head: () => ({ meta: [{ title: "Legal Aid Chat — SilentWitness" }] }),
@@ -21,7 +20,6 @@ const FIRST_MESSAGE: Msg = {
 };
 
 function LegalChatPage() {
-  const { t } = useLanguage();
   const [messages, setMessages] = useState<Msg[]>([FIRST_MESSAGE]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -153,8 +151,8 @@ function LegalChatPage() {
                 <Sparkles className="h-5 w-5" />
               </div>
               <div>
-                <div className="font-semibold">{t('legal.title')}</div>
-                <div className="text-xs text-muted-foreground">{t('legal.subtitle')}</div>
+                <div className="font-semibold">AI Legal Aid Assistant</div>
+                <div className="text-xs text-muted-foreground">Trauma-informed · Confidential · Draft only</div>
               </div>
             </div>
             <span className="hidden rounded-full border border-success/40 bg-success/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-success md:inline">
@@ -183,7 +181,7 @@ function LegalChatPage() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={t('legal.placeholder.reply')}
+              placeholder="Type your reply…"
               disabled={streaming}
               className="flex-1 rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm outline-none focus:border-primary"
             />
@@ -198,14 +196,15 @@ function LegalChatPage() {
           {err && <div className="border-t border-destructive/40 bg-destructive/10 px-4 py-2 text-xs text-destructive">{err}</div>}
         </div>
 
+        {/* FIR side panel */}
         <div className="space-y-4">
           <div className="rounded-2xl border border-border bg-gradient-card p-5 shadow-elegant">
             <div className="mb-2 flex items-center gap-2">
               <FileText className="h-4 w-4 text-primary" />
-              <div className="font-semibold">{t('legal.fir.title')}</div>
+              <div className="font-semibold">FIR Generator</div>
             </div>
             <p className="text-xs text-muted-foreground">
-              {t('legal.fir.subtitle')}
+              When you&rsquo;ve answered the assistant&rsquo;s questions, generate a structured Indian-format FIR draft and export it as a PDF.
             </p>
             <button
               onClick={makeFIR}
@@ -217,7 +216,7 @@ function LegalChatPage() {
               } disabled:cursor-not-allowed disabled:opacity-40`}
             >
               {firLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
-              {firLoading ? t('legal.fir.btn.drafting') : fir ? t('legal.fir.btn.redraft') : t('legal.fir.btn.draft')}
+              {firLoading ? "Drafting…" : fir ? "Re-draft FIR" : "Generate FIR draft"}
             </button>
           </div>
 
@@ -234,7 +233,7 @@ function LegalChatPage() {
                 onClick={exportPdf}
                 className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-glow"
               >
-                <Download className="h-4 w-4" /> {t('legal.fir.btn.download')}
+                <Download className="h-4 w-4" /> Download FIR PDF
               </button>
             </div>
           )}

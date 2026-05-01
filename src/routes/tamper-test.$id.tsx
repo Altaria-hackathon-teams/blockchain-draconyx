@@ -4,7 +4,6 @@ import { Header } from "@/components/Header";
 import { getEvidence } from "@/lib/storage";
 import { sha256File } from "@/lib/crypto";
 import { FlaskConical, Loader2, CheckCircle2, XCircle } from "lucide-react";
-import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/tamper-test/$id")({
   head: () => ({ meta: [{ title: "Tampering Simulation — SilentWitness" }] }),
@@ -12,7 +11,6 @@ export const Route = createFileRoute("/tamper-test/$id")({
 });
 
 function TamperPage() {
-  const { t } = useLanguage();
   const { id } = useParams({ from: "/tamper-test/$id" });
   const rec = getEvidence(id);
   const [busy, setBusy] = useState(false);
@@ -40,11 +38,11 @@ function TamperPage() {
       <Header />
       <div className="mx-auto max-w-3xl px-6 py-12">
         <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-warning/40 bg-warning/10 px-3 py-1 text-xs font-medium text-warning">
-          <FlaskConical className="h-3.5 w-3.5" /> Demo · {t('cert.btn.tamper')}
+          <FlaskConical className="h-3.5 w-3.5" /> Demo · Tampering simulation
         </div>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight">{t('tamper.title')}</h1>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight">Show what happens if a single byte changes</h1>
         <p className="mt-2 text-muted-foreground">
-          {t('tamper.subtitle')}
+          We'll modify the file by one byte and recompute SHA-256. Even the smallest change produces a completely different hash — proving immutability.
         </p>
 
         <div className="mt-8 space-y-4 rounded-2xl border border-border bg-gradient-card p-6 shadow-elegant">

@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useLanguage } from "@/lib/LanguageContext";
 
 export const Route = createFileRoute("/disguise")({
   head: () => ({ meta: [{ title: "Calculator" }] }),
@@ -10,7 +9,6 @@ export const Route = createFileRoute("/disguise")({
 const SECRET = "1337=";
 
 function DisguisePage() {
-  const { t } = useLanguage();
   const nav = useNavigate();
   const [display, setDisplay] = useState("0");
   const [expr, setExpr] = useState("");
